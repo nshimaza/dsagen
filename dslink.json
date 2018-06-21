@@ -1,5 +1,5 @@
 {
-  "name": "dsagen",
+  "name": "dslink-scala-generator",
   "version": "0.0.1",
   "description": "Simple traffic generator for performance testing on IOT-DSA",
   "license": "Cisco Sample Code License",
@@ -9,15 +9,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/nshimaza/dsagen"
+    "url": "https://github.com/nshimaza/dslink-scala-generator"
   },
   "bugs": {
-    "url": "https://github.com/nshimaza/dsagen/issues"
+    "url": "https://github.com/nshimaza/dslink-scala-generator/issues"
   },
   "configs": {
     "name": {
       "type": "string",
-      "default": "dsagen"
+      "default": "Generator"
     },
     "broker": {
       "type": "url"
@@ -39,7 +39,7 @@
     },
     "handler_class": {
       "type": "string",
-      "default": "com.example.DsaGenDSLinkHandler"
+      "default": "com.example.GeneratorDSLinkHandler"
     }
   }
 }

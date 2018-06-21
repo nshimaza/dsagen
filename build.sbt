@@ -4,10 +4,10 @@ lazy val root = (project in file(".")).
   settings(
     inThisBuild(List(
       organization := "com.example",
-      scalaVersion := "2.12.3",
+      scalaVersion := "2.12.6",
       version      := "0.1.0-SNAPSHOT"
     )),
-    name := "dsagen",
+    name := "dslink-scala-generator",
     libraryDependencies ++= Seq(
       dsLink,
       scalaTest % Test

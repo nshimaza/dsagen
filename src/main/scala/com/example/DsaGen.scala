@@ -28,16 +28,16 @@ import org.slf4j.LoggerFactory
 /**
   * Created by nshimaza on 2016/09/19.
   */
-object DsaGen {
+object GeneratorDSLink {
 
   private val log = LoggerFactory.getLogger(getClass)
   private val finishMarker = new SynchronousQueue[Unit]()
 
   def main(args: Array[String]): Unit = {
-    log.info("Starting DsaGen")
+    log.info("Starting Generator")
 
     val provider = DSLinkFactory.generate(args.drop(3),
-      DsaGenDSLinkHandler(
+      GeneratorDSLinkHandler(
         numNode = args(0).toInt,
         msgPerSec = args(1).toInt,
         duration = args(2).toInt,
@@ -51,7 +51,7 @@ object DsaGen {
   }
 }
 
-case class DsaGenDSLinkHandler(numNode: Int,
+case class GeneratorDSLinkHandler(numNode: Int,
                                msgPerSec: Int,
                                duration: Int,
                                markFinished: () => Unit
@@ -69,12 +69,12 @@ case class DsaGenDSLinkHandler(numNode: Int,
   var startTime = 0L
 
   override def onResponderInitialized(link: DSLink) = {
-    log.info("DsaGen base initialized")
+    log.info("Generator base initialized")
     val superRoot = link.getNodeManager.getSuperRoot
 
     val nodes = for (i <- 1 to numNode) yield {
       superRoot
-        .createChild(s"c$i")
+        .createChild(s"c$i", true)
         .setDisplayName(s"Count$i")
         .setValueType(ValueType.NUMBER)
         .setValue(new Value(-2))
@@ -107,10 +107,10 @@ case class DsaGenDSLinkHandler(numNode: Int,
         }
       }, initialDelay, interval, TimeUnit.MICROSECONDS)
 
-    log.info("DsaGen Generator initialization completed")
+    log.info("Generator initialization completed")
   }
 
   override def onResponderConnected(link: DSLink) = {
-    log.info("DsaGen connected")
+    log.info("Generator connected")
   }
 }
