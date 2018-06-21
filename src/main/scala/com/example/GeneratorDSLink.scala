@@ -60,15 +60,15 @@ case class GeneratorDSLinkHandler(numNode: Int,
   override val isResponder = true
 
   val initialDelay = 10000000 // micro seconds
-  val interval = 1000000 / msgPerSec
-  val agingCount = msgPerSec * 60
-  val startCount = agingCount * 2
-  val stopAt = msgPerSec * duration + startCount
+  val interval: Int = 1000000 / msgPerSec
+  val agingCount: Int = msgPerSec * 60
+  val startCount: Int = agingCount * 2
+  val stopAt: Int = msgPerSec * duration + startCount
 
   var count = 0
   var startTime = 0L
 
-  override def onResponderInitialized(link: DSLink) = {
+  override def onResponderInitialized(link: DSLink): Unit = {
     log.info("Generator base initialized")
     val superRoot = link.getNodeManager.getSuperRoot
 
@@ -82,35 +82,33 @@ case class GeneratorDSLinkHandler(numNode: Int,
     }
 
     Objects.getDaemonThreadPool
-      .scheduleAtFixedRate(new Runnable {
-        def run() = {
-          count match {
-            case n if n < agingCount =>
-              nodes.foreach(_.setValue(new Value(count)))
-              count = count + 1
-            case n if n < startCount =>
-              count = count + 1
-            case n if n == startCount =>
-              startTime = System.currentTimeMillis()
-              nodes.foreach(_.setValue(new Value(count)))
-              count = count + 1
-            case n if n < stopAt =>
-              nodes.foreach(_.setValue(new Value(count)))
-              count = count + 1
-            case n if n == stopAt =>
-              nodes.foreach(_.setValue(new Value(-1)))
-              count = count + 1
-              println(s"finished. elapsed time ${System.currentTimeMillis() - startTime} ms")
-              markFinished()
-            case _ =>
-          }
+      .scheduleAtFixedRate(() => {
+        count match {
+          case n if n < agingCount =>
+            nodes.foreach(_.setValue(new Value(count)))
+            count = count + 1
+          case n if n < startCount =>
+            count = count + 1
+          case n if n == startCount =>
+            startTime = System.currentTimeMillis()
+            nodes.foreach(_.setValue(new Value(count)))
+            count = count + 1
+          case n if n < stopAt =>
+            nodes.foreach(_.setValue(new Value(count)))
+            count = count + 1
+          case n if n == stopAt =>
+            nodes.foreach(_.setValue(new Value(-1)))
+            count = count + 1
+            println(s"finished. elapsed time ${System.currentTimeMillis() - startTime} ms")
+            markFinished()
+          case _ =>
         }
       }, initialDelay, interval, TimeUnit.MICROSECONDS)
 
     log.info("Generator initialization completed")
   }
 
-  override def onResponderConnected(link: DSLink) = {
+  override def onResponderConnected(link: DSLink): Unit = {
     log.info("Generator connected")
   }
 }
